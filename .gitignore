@@ -92,3 +92,5 @@ DerivedData/
 !*.xcworkspace/contents.xcworkspacedata
 /*.gcno
 **/xcshareddata/WorkspaceSettings.xcsettings
+
+**/out/
