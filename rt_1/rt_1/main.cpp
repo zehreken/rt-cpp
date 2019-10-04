@@ -6,7 +6,7 @@ int main(int argc, const char * argv[])
 {
 	// Generate .ppm, see https://en.wikipedia.org/wiki/Netpbm_format for more
 	int nx = 400;
-	int ny = 400;
+	int ny = 200;
 	unsigned char imgData[nx * ny * 3];
 	int index = 0;
 //	std::cout<< "P3\n" << nx << " " << ny << "\n255\n";
