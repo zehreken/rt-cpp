@@ -2,6 +2,7 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 #include "vec3.h"
+#include "ray.h"
 
 int main(int argc, const char * argv[])
 {
