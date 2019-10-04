@@ -4,11 +4,24 @@
 #include "vec3.h"
 #include "ray.h"
 
+vec3 color(const ray& r)
+{
+	vec3 unit_direction = unit_vector(r.direction());
+	float t = 0.5 * (unit_direction.y() + 1.0);
+	return (1.0 - t) * vec3(1.0, 1.0, 1.0) + t * vec3(0.5, 0.7, 1.0);
+}
+
 int main(int argc, const char * argv[])
 {
 	// Generate .ppm, see https://en.wikipedia.org/wiki/Netpbm_format for more
-	int nx = 400;
-	int ny = 200;
+	int nx = 800;
+	int ny = 600;
+	
+	vec3 lower_left_corner(-2.0, -1.0, -1.0);
+	vec3 horizontal(4.0, 0.0, 0.0);
+	vec3 vertical(0.0, 2.0, 0.0);
+	vec3 origin(0.0, 0.0, 0.0);
+	
 	unsigned char imgData[nx * ny * 3];
 	int index = 0;
 //	std::cout<< "P3\n" << nx << " " << ny << "\n255\n";
@@ -16,10 +29,16 @@ int main(int argc, const char * argv[])
 	{
 		for (int i = 0; i < nx; i++)
 		{
-			vec3 color(float(i) / float(nx), float(j) / float(ny), 0.2);
-			int ir = int(255.99 * color[0]);
-			int ig = int(255.99 * color[1]);
-			int ib = int(255.99 * color[2]);
+//			vec3 color(float(i) / float(nx), float(j) / float(ny), 0.2);
+			
+			float u = float(i) / float(nx);
+			float v = float(j) / float(ny);
+			ray r(origin, lower_left_corner + u * horizontal + v * vertical);
+			vec3 col = color(r);
+			
+			int ir = int(255.99 * col[0]);
+			int ig = int(255.99 * col[1]);
+			int ib = int(255.99 * col[2]);
 			
 			imgData[index++] = ir;
 			imgData[index++] = ig;
