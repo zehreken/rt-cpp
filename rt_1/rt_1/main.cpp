@@ -15,15 +15,13 @@ int main(int argc, const char * argv[])
 	{
 		for (int i = 0; i < nx; i++)
 		{
-			float r = float(i) / float(nx);
-			float g = float(j) / float(ny);
-			float b = 0.2;
+			vec3 color(float(i) / float(nx), float(j) / float(ny), 0.2);
+			int ir = int(255.99 * color[0]);
+			int ig = int(255.99 * color[1]);
+			int ib = int(255.99 * color[2]);
 			
-			int ir = int(255.99 * r);
 			imgData[index++] = ir;
-			int ig = int(255.99 * g);
 			imgData[index++] = ig;
-			int ib = int(255.99 * b);
 			imgData[index++] = ib;
 //			std::cout << ir << " " << ig << " " << ib << " " << "\n";
 		}
