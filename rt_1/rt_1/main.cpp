@@ -1,6 +1,7 @@
 #include <iostream>
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
+#include "vec3.h"
 
 int main(int argc, const char * argv[])
 {
@@ -17,6 +18,7 @@ int main(int argc, const char * argv[])
 			float r = float(i) / float(nx);
 			float g = float(j) / float(ny);
 			float b = 0.2;
+			
 			int ir = int(255.99 * r);
 			imgData[index++] = ir;
 			int ig = int(255.99 * g);
