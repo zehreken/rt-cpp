@@ -5,6 +5,8 @@
 #include "hitable_list.h"
 #include "camera.h"
 #include "float.h"
+#include <stdlib.h>
+#include <chrono>
 
 vec3 color(const ray& r, hitable *world)
 {
@@ -23,9 +25,11 @@ vec3 color(const ray& r, hitable *world)
 
 int main(int argc, const char * argv[])
 {
+	auto start = std::chrono::system_clock::now();
 	// Generate .ppm, see https://en.wikipedia.org/wiki/Netpbm_format for more
 	int nx = 800;
 	int ny = 400;
+	int ns = 100; // sampling size for anti-aliasing
 	
 	vec3 lower_left_corner(-2.0, -1.0, -1.0);
 	vec3 horizontal(4.0, 0.0, 0.0);
@@ -45,12 +49,16 @@ int main(int argc, const char * argv[])
 	{
 		for (int i = 0; i < nx; i++)
 		{
-			float u = float(i) / float(nx);
-			float v = float(j) / float(ny);
-			ray r = cam.get_ray(u, v);
-			vec3 p = r.point_at(2.0);
-			vec3 col = color(r, world);
-			
+			vec3 col(0, 0, 0);
+			for (int s = 0; s < ns; s++)
+			{
+				float u = float(i + drand48()) / float(nx);
+				float v = float(j + drand48()) / float(ny);
+				ray r = cam.get_ray(u, v);
+				vec3 p = r.point_at(2.0);
+				col = col + color(r, world);
+			}
+			col = col / float(ns);
 			int ir = int(255.99 * col[0]);
 			int ig = int(255.99 * col[1]);
 			int ib = int(255.99 * col[2]);
@@ -63,7 +71,10 @@ int main(int argc, const char * argv[])
 	}
 	
 	int r = stbi_write_png("basic.png", nx, ny, 3, imgData, nx * 3);
-	std::cout << "Result " << r << "\n";
+	
+	auto end = std::chrono::system_clock::now();
+	std::chrono::duration<double> elapsed_seconds = end-start;
+	std::cout << "Result in " << elapsed_seconds.count() << " seconds\n";
 	
     return 0;
 }
