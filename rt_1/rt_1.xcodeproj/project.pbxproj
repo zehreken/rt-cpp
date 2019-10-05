@@ -23,6 +23,10 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		300155F323491EA3007A14CE /* hitable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hitable.h; sourceTree = "<group>"; };
+		300155F423491F17007A14CE /* sphere.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sphere.h; sourceTree = "<group>"; };
+		300155F523492AFB007A14CE /* hitable_list.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = hitable_list.h; sourceTree = "<group>"; };
+		300155F623493675007A14CE /* camera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = camera.h; sourceTree = "<group>"; };
 		300234A62347CD0900DEBF60 /* vec3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vec3.h; sourceTree = "<group>"; };
 		300234A72347E1E200DEBF60 /* ray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ray.h; sourceTree = "<group>"; };
 		3088439523467EF5008998C6 /* rt_1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = rt_1; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -64,6 +68,10 @@
 				3088439823467EF5008998C6 /* main.cpp */,
 				300234A62347CD0900DEBF60 /* vec3.h */,
 				300234A72347E1E200DEBF60 /* ray.h */,
+				300155F323491EA3007A14CE /* hitable.h */,
+				300155F423491F17007A14CE /* sphere.h */,
+				300155F523492AFB007A14CE /* hitable_list.h */,
+				300155F623493675007A14CE /* camera.h */,
 			);
 			path = rt_1;
 			sourceTree = "<group>";
