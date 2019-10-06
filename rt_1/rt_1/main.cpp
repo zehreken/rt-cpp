@@ -8,12 +8,24 @@
 #include <stdlib.h>
 #include <chrono>
 
+vec3 random_in_unit_sphere()
+{
+	vec3 p;
+	do
+	{
+		p = 2.0 * vec3(drand48(), drand48(), drand48()) - vec3(1, 1, 1);
+	}
+	while (dot(p, p) >= 1.0);
+	return p;
+}
+
 vec3 color(const ray& r, hitable *world)
 {
 	hit_record rec;
 	if (world->hit(r, 0.0, MAXFLOAT, rec))
 	{
-		return 0.5 * vec3(rec.normal.x() + 1, rec.normal.y() + 1, rec.normal.z() + 1);
+		vec3 target = rec.p + rec.normal + random_in_unit_sphere();
+		return 0.5 * color(ray(rec.p, target - rec.p), world);
 	}
 	else
 	{
@@ -27,14 +39,9 @@ int main(int argc, const char * argv[])
 {
 	auto start = std::chrono::system_clock::now();
 	// Generate .ppm, see https://en.wikipedia.org/wiki/Netpbm_format for more
-	int nx = 800;
-	int ny = 400;
-	int ns = 100; // sampling size for anti-aliasing
-	
-	vec3 lower_left_corner(-2.0, -1.0, -1.0);
-	vec3 horizontal(4.0, 0.0, 0.0);
-	vec3 vertical(0.0, 2.0, 0.0);
-	vec3 origin(0.0, 0.0, 0.0);
+	int nx = 600;
+	int ny = 300;
+	int ns = 10; // sampling size for anti-aliasing
 	
 	hitable *list[2];
 	list[0] = new sphere(vec3(0, 0, -1), 0.5);
@@ -55,7 +62,7 @@ int main(int argc, const char * argv[])
 				float u = float(i + drand48()) / float(nx);
 				float v = float(j + drand48()) / float(ny);
 				ray r = cam.get_ray(u, v);
-				vec3 p = r.point_at(2.0);
+//				vec3 p = r.point_at(2.0);
 				col = col + color(r, world);
 			}
 			col = col / float(ns);
