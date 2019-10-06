@@ -41,11 +41,13 @@ int main(int argc, const char * argv[])
 	// Generate .ppm, see https://en.wikipedia.org/wiki/Netpbm_format for more
 	int nx = 600;
 	int ny = 300;
-	int ns = 10; // sampling size for anti-aliasing
+	int ns = 100; // sampling size for anti-aliasing
 	
 	hitable *list[2];
 	list[0] = new sphere(vec3(0, 0, -1), 0.5);
 	list[1] = new sphere(vec3(0, -100.5, -1), 100);
+//	list[2] = new sphere(vec3(1, 0, -1), 0.5);
+//	list[3] = new sphere(vec3(-1, 0, -1), 0.5);
 	hitable *world = new hitable_list(list, 2);
 	camera cam;
 	
@@ -66,6 +68,7 @@ int main(int argc, const char * argv[])
 				col = col + color(r, world);
 			}
 			col = col / float(ns);
+			col = vec3(sqrt(col[0]), sqrt(col[1]), sqrt(col[2]));
 			int ir = int(255.99 * col[0]);
 			int ig = int(255.99 * col[1]);
 			int ib = int(255.99 * col[2]);
