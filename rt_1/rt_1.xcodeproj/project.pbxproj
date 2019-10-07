@@ -31,6 +31,7 @@
 		300234A72347E1E200DEBF60 /* ray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ray.h; sourceTree = "<group>"; };
 		3088439523467EF5008998C6 /* rt_1 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = rt_1; sourceTree = BUILT_PRODUCTS_DIR; };
 		3088439823467EF5008998C6 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		3099FE75234A8F2F008EF9EB /* material.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = material.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +73,7 @@
 				300155F423491F17007A14CE /* sphere.h */,
 				300155F523492AFB007A14CE /* hitable_list.h */,
 				300155F623493675007A14CE /* camera.h */,
+				3099FE75234A8F2F008EF9EB /* material.h */,
 			);
 			path = rt_1;
 			sourceTree = "<group>";
