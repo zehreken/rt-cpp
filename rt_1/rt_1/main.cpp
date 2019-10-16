@@ -49,15 +49,16 @@ vec3 reflect(const vec3& v, const vec3& n)
 class metal : public material
 {
 public:
-	metal(const vec3& a) : albedo(a) { }
+	metal(const vec3& a, float f) : albedo(a) { if (f < 1) fuzz = f; else fuzz = 1; }
 	virtual bool scatter(const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered) const
 	{
 		vec3 reflected  = reflect(unit_vector(r_in.direction()), rec.normal);
-		scattered = ray(rec.p, reflected);
+		scattered = ray(rec.p, reflected + fuzz * random_in_unit_sphere());
 		attenuation = albedo;
 		return (dot(scattered.direction(), rec.normal) > 0);
 	}
 	vec3 albedo;
+	float fuzz;
 };
 
 vec3 color(const ray& r, hitable *world, int depth)
@@ -90,14 +91,15 @@ int main(int argc, const char * argv[])
 	// Generate .ppm, see https://en.wikipedia.org/wiki/Netpbm_format for more
 	int nx = 800;
 	int ny = 400;
-	int ns = 100; // sampling size for anti-aliasing
+	int ns = 10; // sampling size for anti-aliasing
 	
-	hitable *list[4];
-	list[0] = new sphere(vec3(0, 0, -1), 0.5, new metal(vec3(0.7, 0.7, 0.7)));
-	list[1] = new sphere(vec3(0, -100.5, -1), 100, new metal(vec3(0.6, 0.6, 0)));
-	list[2] = new sphere(vec3(0.75, -0.25, -1), 0.25, new metal(vec3(0.9, 1, 0.4)));
-	list[3] = new sphere(vec3(-0.75, -0.25, -0.75), 0.25, new metal(vec3(1, 0.5, 0.4)));
-	hitable *world = new hitable_list(list, 4);
+	hitable *list[5];
+	list[0] = new sphere(vec3(0, 0, -1), 0.5, new metal(vec3(0.7, 0.7, 0.7), 0));
+	list[1] = new sphere(vec3(0, -100.5, -1), 100, new lambertian(vec3(0.6, 0.6, 0)));
+	list[2] = new sphere(vec3(0.75, -0.25, -1), 0.25, new lambertian(vec3(0.9, 1, 0.2)));
+	list[3] = new sphere(vec3(-0.75, -0.25, -0.75), 0.25, new metal(vec3(1, 0.5, 0.4), 0.5));
+	list[4] = new sphere(vec3(0, -0.5, -0.5), 0.1, new metal(vec3(1, 1, 0), 0.5));
+	hitable *world = new hitable_list(list, 5);
 	camera cam;
 	
 	unsigned char imgData[nx * ny * 3];
