@@ -26,13 +26,26 @@ bool refract(const vec3& v, const vec3& n, float ni_over_nt, vec3& refracted)
 	float discriminant = 1.0 - ni_over_nt * ni_over_nt * (1 - dt * dt);
 	if (discriminant > 0)
 	{
-		refracted = ni_over_nt * (v - dt * n) - sqrt(discriminant) * n;
+		refracted = ni_over_nt * (uv - dt * n) - sqrt(discriminant) * n;
 		return true;
 	}
 	else
 	{
 		return false;
 	}
+}
+
+float schlick(float cosine, float ref_idx)
+{
+	float r0 = (1 - ref_idx) / (1 + ref_idx);
+	r0 = r0 * r0;
+	
+	return r0 + (1 - r0) * pow(1 - cosine, 5);
+}
+
+vec3 reflect(const vec3& v, const vec3& n)
+{
+	return v - 2 * dot(v, n) * n;
 }
 
 class material
@@ -56,11 +69,6 @@ public:
 	
 	vec3 albedo;
 };
-
-vec3 reflect(const vec3& v, const vec3& n)
-{
-	return v - 2 * dot(v, n) * n;
-}
 
 class metal : public material
 {
@@ -86,27 +94,40 @@ public:
 		vec3 outward_normal;
 		vec3 reflected = reflect(r_in.direction(), rec.normal);
 		float ni_over_nt;
-		attenuation = vec3(1.0, 1.0, 0.0);
+		attenuation = vec3(1.0, 1.0, 1.0);
 		vec3 refracted;
+		float reflect_prob;
+		float cosine;
 		if (dot(r_in.direction(), rec.normal) > 0)
 		{
 			outward_normal = -rec.normal;
 			ni_over_nt = ref_idx;
+			cosine = ref_idx * dot(r_in.direction(), rec.normal) / r_in.direction().length();
 		}
 		else
 		{
 			outward_normal = rec.normal;
 			ni_over_nt = 1.0 / ref_idx;
+			cosine = -dot(r_in.direction(), rec.normal) / r_in.direction().length();
 		}
 		
 		if (refract(r_in.direction(), outward_normal, ni_over_nt, refracted))
 		{
-			scattered = ray(rec.p, refracted);
+			reflect_prob = schlick(cosine, ref_idx);
 		}
 		else
 		{
 			scattered = ray(rec.p, reflected);
-			return false;
+			reflect_prob = 1.0;
+		}
+		
+		if (drand48() < reflect_prob)
+		{
+			scattered = ray(rec.p, reflected);
+		}
+		else
+		{
+			scattered = ray(rec.p, refracted);
 		}
 		
 		return true;
@@ -144,7 +165,7 @@ int main(int argc, const char * argv[])
 	// Generate .ppm, see https://en.wikipedia.org/wiki/Netpbm_format for more
 	int nx = 800;
 	int ny = 400;
-	int ns = 10; // sampling size for anti-aliasing
+	int ns = 50; // sampling size for anti-aliasing
 	
 	hitable *list[6];
 	list[0] = new sphere(vec3(0, 0, -1), 0.5, new metal(vec3(0.7, 0.7, 0.7), 0));
@@ -152,7 +173,7 @@ int main(int argc, const char * argv[])
 	list[2] = new sphere(vec3(0.75, -0.25, -1), 0.25, new lambertian(vec3(0.9, 1, 0.2)));
 	list[3] = new sphere(vec3(-0.75, -0.25, -0.75), 0.25, new metal(vec3(1, 0.5, 0.4), 0.5));
 	list[4] = new sphere(vec3(0.3, -0.4, -0.6), 0.1, new metal(vec3(0.2, 0.5, 1), 0.5));
-	list[5] = new sphere(vec3(-1.4, 0.5, -2), 1, new dielectric(1.5));
+	list[5] = new sphere(vec3(-1.8, 0.5, -2), -1, new dielectric(2.5));
 	hitable *world = new hitable_list(list, 6);
 	camera cam;
 	
