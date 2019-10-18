@@ -19,6 +19,22 @@ vec3 random_in_unit_sphere()
 	return p;
 }
 
+bool refract(const vec3& v, const vec3& n, float ni_over_nt, vec3& refracted)
+{
+	vec3 uv = unit_vector(v);
+	float dt = dot(uv, n);
+	float discriminant = 1.0 - ni_over_nt * ni_over_nt * (1 - dt * dt);
+	if (discriminant > 0)
+	{
+		refracted = ni_over_nt * (v - dt * n) - sqrt(discriminant) * n;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 class material
 {
 public:
@@ -61,6 +77,43 @@ public:
 	float fuzz;
 };
 
+class dielectric : public material
+{
+public:
+	dielectric(float ri) : ref_idx(ri) { }
+	virtual bool scatter(const ray& r_in, const hit_record& rec, vec3& attenuation, ray& scattered) const
+	{
+		vec3 outward_normal;
+		vec3 reflected = reflect(r_in.direction(), rec.normal);
+		float ni_over_nt;
+		attenuation = vec3(1.0, 1.0, 0.0);
+		vec3 refracted;
+		if (dot(r_in.direction(), rec.normal) > 0)
+		{
+			outward_normal = -rec.normal;
+			ni_over_nt = ref_idx;
+		}
+		else
+		{
+			outward_normal = rec.normal;
+			ni_over_nt = 1.0 / ref_idx;
+		}
+		
+		if (refract(r_in.direction(), outward_normal, ni_over_nt, refracted))
+		{
+			scattered = ray(rec.p, refracted);
+		}
+		else
+		{
+			scattered = ray(rec.p, reflected);
+			return false;
+		}
+		
+		return true;
+	}
+	float ref_idx;
+};
+
 vec3 color(const ray& r, hitable *world, int depth)
 {
 	hit_record rec;
@@ -91,15 +144,16 @@ int main(int argc, const char * argv[])
 	// Generate .ppm, see https://en.wikipedia.org/wiki/Netpbm_format for more
 	int nx = 800;
 	int ny = 400;
-	int ns = 1000; // sampling size for anti-aliasing
+	int ns = 10; // sampling size for anti-aliasing
 	
-	hitable *list[5];
+	hitable *list[6];
 	list[0] = new sphere(vec3(0, 0, -1), 0.5, new metal(vec3(0.7, 0.7, 0.7), 0));
 	list[1] = new sphere(vec3(0, -100.5, -1), 100, new metal(vec3(0.6, 0.6, 0), 0.5));
 	list[2] = new sphere(vec3(0.75, -0.25, -1), 0.25, new lambertian(vec3(0.9, 1, 0.2)));
 	list[3] = new sphere(vec3(-0.75, -0.25, -0.75), 0.25, new metal(vec3(1, 0.5, 0.4), 0.5));
 	list[4] = new sphere(vec3(0.3, -0.4, -0.6), 0.1, new metal(vec3(0.2, 0.5, 1), 0.5));
-	hitable *world = new hitable_list(list, 5);
+	list[5] = new sphere(vec3(-1.4, 0.5, -2), 1, new dielectric(1.5));
+	hitable *world = new hitable_list(list, 6);
 	camera cam;
 	
 	unsigned char imgData[nx * ny * 3];
