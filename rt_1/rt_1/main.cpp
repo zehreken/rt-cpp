@@ -165,17 +165,14 @@ int main(int argc, const char * argv[])
 	// Generate .ppm, see https://en.wikipedia.org/wiki/Netpbm_format for more
 	int nx = 800;
 	int ny = 400;
-	int ns = 50; // sampling size for anti-aliasing
+	int ns = 5; // sampling size for anti-aliasing
 	
-	hitable *list[6];
-	list[0] = new sphere(vec3(0, 0, -1), 0.5, new metal(vec3(0.7, 0.7, 0.7), 0));
-	list[1] = new sphere(vec3(0, -100.5, -1), 100, new metal(vec3(0.6, 0.6, 0), 0.5));
-	list[2] = new sphere(vec3(0.75, -0.25, -1), 0.25, new lambertian(vec3(0.9, 1, 0.2)));
-	list[3] = new sphere(vec3(-0.75, -0.25, -0.75), 0.25, new metal(vec3(1, 0.5, 0.4), 0.5));
-	list[4] = new sphere(vec3(0.3, -0.4, -0.6), 0.1, new metal(vec3(0.2, 0.5, 1), 0.5));
-	list[5] = new sphere(vec3(-1.8, 0.5, -2), -1, new dielectric(2.5));
-	hitable *world = new hitable_list(list, 6);
-	camera cam;
+	float R = cos(M_PI / 4);
+	hitable *list[2];
+	list[0] = new sphere(vec3(-R, 0, -1), R, new lambertian(vec3(0, 0, 1)));
+	list[1] = new sphere(vec3(R, 0, -1), R, new lambertian(vec3(1, 0, 0)));
+	hitable *world = new hitable_list(list, 2);
+	camera cam(90, float(nx) / float(ny));
 	
 	unsigned char imgData[nx * ny * 3];
 	int index = 0;
