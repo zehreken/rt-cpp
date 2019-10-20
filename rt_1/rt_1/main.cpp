@@ -166,13 +166,26 @@ int main(int argc, const char * argv[])
 	int nx = 800;
 	int ny = 400;
 	int ns = 5; // sampling size for anti-aliasing
-	
+	//*
 	float R = cos(M_PI / 4);
 	hitable *list[2];
 	list[0] = new sphere(vec3(-R, 0, -1), R, new lambertian(vec3(0, 0, 1)));
 	list[1] = new sphere(vec3(R, 0, -1), R, new lambertian(vec3(1, 0, 0)));
 	hitable *world = new hitable_list(list, 2);
-	camera cam(90, float(nx) / float(ny));
+	//*/
+	
+	/*
+	hitable *list[6];
+	list[0] = new sphere(vec3(0, 0, -1), 0.5, new metal(vec3(0.7, 0.7, 0.7), 0));
+	list[1] = new sphere(vec3(0, -100.5, -1), 100, new metal(vec3(0.6, 0.6, 0.6), 0.5));
+	list[2] = new sphere(vec3(0.75, -0.25, -1), 0.25, new lambertian(vec3(0.9, 1, 0.2)));
+	list[3] = new sphere(vec3(-0.75, -0.25, -0.75), 0.25, new metal(vec3(1, 0.0, 0.4), 0.5));
+	list[4] = new sphere(vec3(0.3, -0.4, -0.6), 0.1, new metal(vec3(0.2, 0.5, 1), 0.5));
+	list[5] = new sphere(vec3(-1.8, 0.5, -2), -1, new dielectric(1.3));
+	hitable *world = new hitable_list(list, 5);
+	//*/
+	
+	camera cam(vec3(0, 5, 5), vec3(0, 0, -1), vec3(0, 1, 0), 60, float(nx) / float(ny));
 	
 	unsigned char imgData[nx * ny * 3];
 	int index = 0;
@@ -192,9 +205,9 @@ int main(int argc, const char * argv[])
 			}
 			col = col / float(ns);
 			col = vec3(sqrt(col[0]), sqrt(col[1]), sqrt(col[2]));
-			int ir = int(255.99 * col[0]);
-			int ig = int(255.99 * col[1]);
-			int ib = int(255.99 * col[2]);
+			int ir = int(255 * col[0]);
+			int ig = int(255 * col[1]);
+			int ib = int(255 * col[2]);
 			
 			imgData[index++] = ir;
 			imgData[index++] = ig;
@@ -207,7 +220,7 @@ int main(int argc, const char * argv[])
 	
 	auto end = std::chrono::system_clock::now();
 	std::chrono::duration<double> elapsed_seconds = end-start;
-	std::cout << "Result in " << elapsed_seconds.count() << " seconds\n";
+	std::cout << "Result in " << elapsed_seconds.count() << " seconds\nSuccess: " << r << "\n";
 	
     return 0;
 }
