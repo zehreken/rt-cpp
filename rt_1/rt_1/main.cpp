@@ -166,7 +166,8 @@ int main(int argc, const char * argv[])
 	int nx = 800;
 	int ny = 400;
 	int ns = 5; // sampling size for anti-aliasing
-	//*
+	
+	/*
 	float R = cos(M_PI / 4);
 	hitable *list[2];
 	list[0] = new sphere(vec3(-R, 0, -1), R, new lambertian(vec3(0, 0, 1)));
@@ -174,10 +175,10 @@ int main(int argc, const char * argv[])
 	hitable *world = new hitable_list(list, 2);
 	//*/
 	
-	/*
+	//*
 	hitable *list[6];
 	list[0] = new sphere(vec3(0, 0, -1), 0.5, new metal(vec3(0.7, 0.7, 0.7), 0));
-	list[1] = new sphere(vec3(0, -100.5, -1), 100, new metal(vec3(0.6, 0.6, 0.6), 0.5));
+	list[1] = new sphere(vec3(0, -1000.5, -1), 1000, new metal(vec3(0.6, 0.6, 0.6), 0.5));
 	list[2] = new sphere(vec3(0.75, -0.25, -1), 0.25, new lambertian(vec3(0.9, 1, 0.2)));
 	list[3] = new sphere(vec3(-0.75, -0.25, -0.75), 0.25, new metal(vec3(1, 0.0, 0.4), 0.5));
 	list[4] = new sphere(vec3(0.3, -0.4, -0.6), 0.1, new metal(vec3(0.2, 0.5, 1), 0.5));
@@ -185,12 +186,13 @@ int main(int argc, const char * argv[])
 	hitable *world = new hitable_list(list, 5);
 	//*/
 	
-	camera cam(vec3(0, 5, 5), vec3(0, 0, -1), vec3(0, 1, 0), 60, float(nx) / float(ny));
+	camera cam(vec3(1, 1, 2), vec3(0, 0, -1), vec3(0, 1, 0), 45, float(nx) / float(ny));
 	
 	unsigned char imgData[nx * ny * 3];
 	int index = 0;
 //	std::cout<< "P3\n" << nx << " " << ny << "\n255\n";
-	for (int j = ny - 1; j >= 0; j--)
+	//for (int j = ny - 1; j >= 0; j--)
+	for (int j = 0; j < ny; j++)
 	{
 		for (int i = 0; i < nx; i++)
 		{
