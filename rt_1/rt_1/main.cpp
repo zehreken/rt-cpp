@@ -165,7 +165,7 @@ int main(int argc, const char * argv[])
 	// Generate .ppm, see https://en.wikipedia.org/wiki/Netpbm_format for more
 	int nx = 800;
 	int ny = 400;
-	int ns = 5; // sampling size for anti-aliasing
+	int ns = 500; // sampling size for anti-aliasing
 	
 	/*
 	float R = cos(M_PI / 4);
@@ -178,17 +178,18 @@ int main(int argc, const char * argv[])
 	//*/
 	
 	//*
-	hitable *list[6];
+	hitable *list[7];
 	list[0] = new sphere(vec3(0, 0, -1), 0.5, new metal(vec3(0.7, 0.7, 0.7), 0));
 	list[1] = new sphere(vec3(0, -1000.5, -1), 1000, new metal(vec3(0.6, 0.6, 0.6), 0.5));
 	list[2] = new sphere(vec3(0.75, -0.25, -1), 0.25, new lambertian(vec3(0.9, 1, 0.2)));
 	list[3] = new sphere(vec3(-0.75, -0.25, -0.75), 0.25, new metal(vec3(1, 0.0, 0.4), 0.5));
-	list[4] = new sphere(vec3(0.3, -0.4, -0.6), 0.1, new metal(vec3(0.2, 0.5, 1), 0.5));
-	list[5] = new sphere(vec3(-1.8, 0.5, -2), -1, new dielectric(1.3));
-	hitable *world = new hitable_list(list, 5);
+	list[4] = new sphere(vec3(0.3, -0.4, -0.6), 0.1, new dielectric(1.5));
+	list[5] = new sphere(vec3(-1.8, 0.5, -1), 1, new metal(vec3(0.2, 0.6, 0.1), 0.7));
+	list[6] = new sphere(vec3(0, -0.1, 0), 0.4, new dielectric(1.5));
+	hitable *world = new hitable_list(list, 7);
 	//*/
 	
-	camera cam(vec3(2, 2, 1), vec3(0, 0, -1), vec3(0, 1, 0), 60, float(nx) / float(ny));
+	camera cam(vec3(2, 0.1, 0.1), vec3(0, 0, -1), vec3(0, 1, 0), 30, float(nx) / float(ny));
 	
 	unsigned char imgData[nx * ny * 3];
 	int index = 0;
