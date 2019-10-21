@@ -169,10 +169,12 @@ int main(int argc, const char * argv[])
 	
 	/*
 	float R = cos(M_PI / 4);
-	hitable *list[2];
-	list[0] = new sphere(vec3(-R, 0, -1), R, new lambertian(vec3(0, 0, 1)));
-	list[1] = new sphere(vec3(R, 0, -1), R, new lambertian(vec3(1, 0, 0)));
-	hitable *world = new hitable_list(list, 2);
+	hitable *list[4];
+	list[0] = new sphere(vec3(0, 0, -1), R, new lambertian(vec3(0, 0, 1)));
+	list[1] = new sphere(vec3(2 * R, 0, -1), R, new lambertian(vec3(1, 0, 0)));
+	list[2] = new sphere(vec3(-2 * R, 0, -1), R, new lambertian(vec3(0, 1, 0)));
+	list[3] = new sphere(vec3(0, -1000.5, -1), 1000, new metal(vec3(0.6, 0.6, 0.6), 1.0));
+	hitable *world = new hitable_list(list, 4);
 	//*/
 	
 	//*
@@ -186,13 +188,12 @@ int main(int argc, const char * argv[])
 	hitable *world = new hitable_list(list, 5);
 	//*/
 	
-	camera cam(vec3(1, 1, 2), vec3(0, 0, -1), vec3(0, 1, 0), 45, float(nx) / float(ny));
+	camera cam(vec3(2, 2, 1), vec3(0, 0, -1), vec3(0, 1, 0), 60, float(nx) / float(ny));
 	
 	unsigned char imgData[nx * ny * 3];
 	int index = 0;
 //	std::cout<< "P3\n" << nx << " " << ny << "\n255\n";
-	//for (int j = ny - 1; j >= 0; j--)
-	for (int j = 0; j < ny; j++)
+	for (int j = ny - 1; j >= 0; j--)
 	{
 		for (int i = 0; i < nx; i++)
 		{

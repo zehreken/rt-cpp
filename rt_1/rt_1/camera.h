@@ -16,10 +16,19 @@ public:
 		w = unit_vector(look_from - look_at);
 		u = unit_vector(cross(vup, w));
 		v = cross(w, u);
-//		lower_left_corner = vec3(-half_width, -half_height, -1.0);
 		lower_left_corner = origin - half_width * u - half_height * v - w;
 		horizontal = 2 * half_width * u;
 		vertical = 2 * half_height * v;
+		
+		/* Debug lines
+		std::cout << theta << " " << half_height << " " << half_width << "\n";
+		u.print();
+		v.print();
+		w.print();
+		lower_left_corner.print();
+		horizontal.print();
+		vertical.print();
+		//*/
 	}
 	
 	ray get_ray(float u, float v)
