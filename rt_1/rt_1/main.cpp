@@ -165,9 +165,9 @@ int main(int argc, const char * argv[])
 	// Generate .ppm, see https://en.wikipedia.org/wiki/Netpbm_format for more
 	int nx = 800;
 	int ny = 400;
-	int ns = 50; // sampling size for anti-aliasing
+	int ns = 100; // sampling size for anti-aliasing
 	
-	//*
+	/*
 	float R = 0.5;
 	hitable *list[4];
 	list[0] = new sphere(vec3(0, 0, -1), R, new lambertian(vec3(0, 0, 1)));
@@ -189,10 +189,22 @@ int main(int argc, const char * argv[])
 	hitable *world = new hitable_list(list, 7);
 	//*/
 	
-	vec3 look_from = vec3(2, 0.1, 0.1);
-	vec3 look_at = vec3(0, 0, -1);
+	//*
+	float R = 0.5;
+	hitable *list[100];
+	for (int i = 0; i < 99; i++)
+	{
+		//list[i] = new sphere(vec3(drand48() * 20 - 10, 0, drand48() * 20 - 10), R, new lambertian(vec3(0, 0, 1)));
+		list[i] = new sphere(vec3(drand48() * 20 - 10, 0, drand48() * 20 - 10), R, new metal(vec3(0.9, 0.4, 0.4), 1));
+	}
+	list[99] = new sphere(vec3(0, -1000.5, -1), 1000, new metal(vec3(0.6, 0.6, 0.6), 1.0));
+	hitable *world = new hitable_list(list, 100);
+	//*/
+	
+	vec3 look_from = vec3(10, 0, 10);
+	vec3 look_at = vec3(0, 0, 0);
 	float dist_to_focus = (look_from - look_at).length();
-	float aperture = 2.0;
+	float aperture = 1;
 	camera cam(look_from, look_at, vec3(0, 1, 0), 60, float(nx) / float(ny), aperture, dist_to_focus);
 	
 	unsigned char imgData[nx * ny * 3];
